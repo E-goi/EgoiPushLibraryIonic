@@ -17,7 +17,15 @@
     "lib": [
       "es2018",
       "dom"
-    ]
+    ],
+    "paths": {
+      "egoi-push-ionic": [
+        "dist/egoi-push-ionic"
+      ],
+      "egoi-push-ionic/*": [
+        "dist/egoi-push-ionic/*"
+      ]
+    }
   },
   "angularCompilerOptions": {
     "fullTemplateTypeCheck": true,

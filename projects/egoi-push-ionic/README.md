@@ -9,18 +9,42 @@
 
 #### Basic setup
 
-###### 1. Install the plugin using NPM
+###### 1. Install the plugin using NPM or Yarn
 
 ```shell
+  npm install @egoi/push-ionic
+  yarn add @egoi/push-ionic
 ```
 <br>
 
-###### 2. Import from @capacitor/core
-```ts
-import { EgoiPush } from '@egoi/push-ionic';
-```
-
 ###### 3. Set your publishable key
 ```ts
-EgoiPush.register(apiKey: 'your api here', appId: 'your app id here', os: 'android|ios', twoStepsField: 'the field to set on new/edit register (e.g. id, email) (optional)', twoStepsValue: 'the field value to set on new/edit register (optional)', deepLinkHandler: 'link handler to redirect the user on notification open (optional)');
+
+import { EgoiPushIonicModule } from '@egoi/push-ionic';
+
+EgoiPushIonicModule.forRoot({
+  apiKey: 'your api here',
+  appId: 'your app id here',
+  os: 'android|ios',
+  twoStepsField: 'the field to set on new/edit register (e.g. id, email) (optional)',
+  twoStepsValue: 'the field value to set on new/edit register (optional)', deepLinkHandler: 'link handler to redirect the user on notification open (optional)'
+});
+```
+
+
+###### 3. Register the device
+```ts
+import { EgoiPushIonicService } from '@egoi/push-ionic';
+
+export class AuthService {
+  constructor(
+      private egoiPushService: EgoiPushIonicService
+  )
+
+  registerDevice(user) {
+    this.egoiPushService.registerDevice('email', user.email).then((response) => {
+      // proccess the resolve
+    });
+  }
+}
 ```

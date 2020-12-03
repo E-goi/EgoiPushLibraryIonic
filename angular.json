@@ -14,14 +14,10 @@
           "options": {
             "tsConfig": "projects/egoi-push-ionic/tsconfig.lib.json",
             "project": "projects/egoi-push-ionic/ng-package.json"
-          }
-        },
-        "test": {
-          "builder": "@angular-devkit/build-angular:karma",
-          "options": {
-            "main": "projects/egoi-push-ionic/src/test.ts",
-            "tsConfig": "projects/egoi-push-ionic/tsconfig.spec.json",
-            "karmaConfig": "projects/egoi-push-ionic/karma.conf.js"
+          },
+          "configurations": {
+            "production": {
+            }
           }
         },
         "lint": {

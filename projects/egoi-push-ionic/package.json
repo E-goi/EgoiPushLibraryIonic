@@ -1,14 +1,23 @@
 {
   "name": "@egoi/push-ionic",
-  "version": "0.0.1",
+  "version": "0.0.2",
   "peerDependencies": {
-    "@angular/common": "^8.2.14",
+    "@angular/common": "~10.0.0",
     "@angular/core": "~10.0.0",
     "@ionic-native/http": "^5.29.0",
     "@ionic/angular": "^5.0.0",
     "@ionic-native/in-app-browser": "^5.29.0",
     "cordova-plugin-advanced-http": "^3.1.0",
     "cordova-plugin-http": "^1.2.0",
-    "cordova-plugin-inappbrowser": "4.0.0"
+    "cordova-plugin-inappbrowser": "^4.1.0"
+  },
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/E-goi/push-ionic-lib"
+  },
+  "keywords": ["e-goi", "push", "ionic", "capacitor", "firebase"],
+  "author": "E-goi",
+  "bugs": {
+    "url": "https://github.com/E-goi/push-ionic-lib/issues"
   }
 }

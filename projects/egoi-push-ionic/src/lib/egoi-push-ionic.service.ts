@@ -42,16 +42,14 @@ export class EgoiPushIonicService {
     }
 
     /**
-     * @private
      * Logs an error to the console.
-     * @param {String} error The error to log.
+     * @param String error The error to log.
      */
     private logError(error : string): void {
         console.error('EgoiPushLib: ' + error);
     }
 
     /**
-     * @private
      * Method called when there is a required field missing that should have been provided in the
      * init method.
      * @param field The name of the required field missing.
@@ -294,7 +292,7 @@ export class EgoiPushIonicService {
      * Call this method to send an event to the egoi web service API.
      *
      * @param event - The event identifier that will be sent in the payload of the request.
-     * @param {Function} successCallback - Callback in case of success in the sendEvent request. Defaults to noop.
+     * @param Function successCallback - Callback in case of success in the sendEvent request. Defaults to noop.
      */
     private sendEvent(event: string, successCallback?: any): boolean {
         if(this.app === undefined) {

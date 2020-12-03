@@ -1,6 +1,6 @@
 <p align="center"><br><img src="https://avatars3.githubusercontent.com/u/41448329?s=200&v=4" width="128" height="128" /></p>
 <h3 align="center">E-goi push</h3>
-<p align="center"><strong><code>@E-goi/push-ionic-lib</code></strong></p>
+<p align="center"><strong><code>@E-goi/push-ionic</code></strong></p>
 <p align="center">
   E-goi Push Lib for Capacitor apps
 </p>

@@ -19,7 +19,6 @@ export class EgoiPushIonicService {
     private token: string = '';
     private contactId: string = '';
     private messageHash: string = '';
-    private http: HTTP;
     private alerts: AlertController;
     private iab: InAppBrowser;
 
@@ -30,13 +29,10 @@ export class EgoiPushIonicService {
     private registerDeviceEndpoint: string;
     private eventsEndpoint: string;
 
-    constructor(@Inject(EgoiAppService) private config: EgoiApp) {
-        console.log('My config: ', config);
-
+    constructor(@Inject(EgoiAppService) private config: EgoiApp, private http : HTTP) {
         this.apiEndpoint = 'https://dev-push-wrapper.egoiapp.com';
         this.registerDeviceEndpoint = '/token';
         this.eventsEndpoint = '/event';
-        this.http = new HTTP();
 
         this.app = config;
         this.alerts = new AlertController();
@@ -67,84 +63,83 @@ export class EgoiPushIonicService {
     }
 
     /**
+     * Retrieve the PushNotifications instance to use it on custom implementation
+     */
+    pushInstance () : any {
+        return PushNotifications;
+    }
+
+    /**
      * Call this method after providing all the required information (appID and API key) to register the device.
      *
      * @param twoStepsField The two steps field can also be provided here (overrides previously set values).
      * @param twoStepsValue The two steps value can also be provided here (overrides previously set values).
      *
-     * @returns boolean The success state of registering the device.
+     * @returns Promise The success state of registering the device.
      */
-    registerDevice(twoStepsField?: string, twoStepsValue?: string) : any {
-        if(this.app === undefined) {
-            this.logError('Your app are not registered! Use register() function to set the credentials..');
-            return;
-        }
-        // Required fields
-        if (!this.app.appId) {
-            return this.missingField('appId');
-        }
+    registerDevice(twoStepsField?: string, twoStepsValue?: string) : Promise<any> {
+        return new Promise((resolve, reject) => {
 
-        if (!this.token) {
-            return this.missingField('token');
-        }
-
-        if (!this.app.apiKey) {
-            return this.missingField('apiKey');
-        }
-
-        if (!this.app.os) {
-            return this.missingField('os');
-        }
-
-        const payload: {
-            api_key: string,
-            app_id: number,
-            token: string,
-            os: string,
-            two_steps_data?: {
-                field: string,
-                value: string
-            } | undefined
-        } = {
-            api_key: this.app.apiKey,
-            app_id: this.app.appId,
-            token: this.token,
-            os: this.app.os
-        };
-
-        if (twoStepsField) {
-            this.app.twoStepsField = twoStepsField;
-        }
-
-        if (twoStepsValue) {
-            this.app.twoStepsValue = twoStepsValue;
-        }
-
-        if (this.app.twoStepsField && this.app.twoStepsValue) {
-            payload.two_steps_data = {
-                field: this.app.twoStepsField,
-                value: this.app.twoStepsValue
+            if (this.app === undefined) {
+                this.logError('Your app are not registered! Use register() function to set the credentials..');
+                reject('Your app are not registered! Use register() function to set the credentials..');
+            }
+            // Required fields
+            if (!this.app.appId) {
+                reject(this.missingField('appId'));
+            }
+            if (!this.token) {
+                reject(this.missingField('token'));
+            }
+            if (!this.app.apiKey) {
+                reject(this.missingField('apiKey'));
+            }
+            if (!this.app.os) {
+                reject(this.missingField('os'));
+            }
+        
+            const payload: {
+                api_key: string,
+                app_id: number,
+                token: string,
+                os: string,
+                two_steps_data?: {
+                    field: string,
+                    value: string
+                } | undefined
+            } = {
+                api_key: this.app.apiKey,
+                app_id: this.app.appId,
+                token: this.token,
+                os: this.app.os
             };
-        }
-
-        console.log('Url:', this.apiEndpoint + this.registerDeviceEndpoint);
-        console.log('Payload:', payload);
-
-        this.http.post(this.apiEndpoint + this.registerDeviceEndpoint, payload, {})
-            .then(
-                (res) => {
-                    const data = JSON.parse(res.data);
-                    console.log('Payload:', data);
-
-                    if (data.data === 'OK') {
-                        this.presentRegistrationAlert('success').then();
-                        return true;
-                    } else {
-                        this.presentRegistrationAlert('error').then();
-                        return false;
-                    }
-                }
-            );
+    
+            if (twoStepsField) {
+                this.app.twoStepsField = twoStepsField;
+            }
+    
+            if (twoStepsValue) {
+                this.app.twoStepsValue = twoStepsValue;
+            }
+    
+            if (this.app.twoStepsField && this.app.twoStepsValue) {
+                payload.two_steps_data = {
+                    field: this.app.twoStepsField,
+                    value: this.app.twoStepsValue
+                };
+            }
+            
+            fetch(this.apiEndpoint + this.registerDeviceEndpoint, {
+                method: "POST", 
+                body: JSON.stringify(payload),
+                headers: new Headers({
+                    'Content-Type': 'application/json'
+                })
+            })
+            .then(res => res.json())
+            .then(data => resolve(data))
+            .catch(error => reject(error));
+        });
     }
 
     /**
@@ -238,8 +233,6 @@ export class EgoiPushIonicService {
                 break;
         }
 
-        console.error('EgoiPushLib: ' + 'initFCM');
-
         PushNotifications.requestPermission().then(
             (result) => {
                 if (result.granted) {
@@ -282,15 +275,15 @@ export class EgoiPushIonicService {
         }
 
         // Fetch and set the contact id and message hash from the received notification
-        this.setContactId(payload.data.data.egoiCustomData.contactId || null);
-        this.setMessageHash(payload.data.data.egoiCustomData.messageHash || null);
+        this.setContactId(payload.data?.data?.egoiCustomData?.contactId || null);
+        this.setMessageHash(payload.data?.data?.egoiCustomData?.messageHash || null);
 
-        const actions = payload.data.data.egoiCustomData.actions[0] || null;
+        const actions = payload.data?.data?.egoiCustomData?.actions[0] || null;
 
         const notification = {
-            title: payload.title || payload.data.data.notification.title || null,
-            message: payload.body || payload.data.data.notification.body || null,
-            okText: actions.text || 'View',
+            title: payload.title || payload.data?.data?.notification?.title || null,
+            message: payload.body || payload.data?.data?.notification?.body || null,
+            okText: actions?.text || 'View',
             actions: actions || {}
         };
 
@@ -319,18 +312,25 @@ export class EgoiPushIonicService {
             device_id: this.token
         };
 
-        this.http.post(this.apiEndpoint + this.eventsEndpoint, payload, {})
-            .then(
-                (res) => {
-                    if (successCallback) {
-                        successCallback();
-                    }
+        fetch(this.apiEndpoint + this.eventsEndpoint, {
+            method: "POST", 
+            body: JSON.stringify(payload),
+            headers: new Headers({
+                'Content-Type': 'application/json'
+            })
+        })
+        .then(res => res.json())
+        .then(data => {
+            if (successCallback) {
+                successCallback();
+            }
 
-                    return res.data === 'OK';
-                }
-            );
-
-        return false;
+            return data === 'OK';
+        })
+        .catch(error => {
+            this.logError(error);
+            return false;
+        });
     }
 
     /**

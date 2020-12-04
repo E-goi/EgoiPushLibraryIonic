@@ -1,5 +1,4 @@
-import { Injectable, Inject } from '@angular/core';
-import { EgoiAppService, EgoiApp } from './egoi-push-ionic.module';
+import { Injectable } from '@angular/core';
 import { Plugins, PushNotification, PushNotificationActionPerformed, PushNotificationToken } from '@capacitor/core'
 import { AlertController } from '@ionic/angular'
 import { InAppBrowser } from '@ionic-native/in-app-browser/ngx'
@@ -9,12 +8,13 @@ const { PushNotifications } = Plugins;
 @Injectable({
   providedIn: 'root'
 })
+
 export class EgoiPushIonicService {
 
   /**
      * Service Properties
      */
-    private app: EgoiApp | undefined;
+    private app: EgoiApp;
     private token: string = '';
     private contactId: string = '';
     private messageHash: string = '';
@@ -28,15 +28,22 @@ export class EgoiPushIonicService {
     private registerDeviceEndpoint: string;
     private eventsEndpoint: string;
 
-    constructor(@Inject(EgoiAppService) private config: EgoiApp) {
+    constructor() {
         this.apiEndpoint = 'https://push-wrapper.egoiapp.com';
         this.registerDeviceEndpoint = '/token';
         this.eventsEndpoint = '/event';
 
-        this.app = config;
         this.alerts = new AlertController();
         this.iab = new InAppBrowser();
+    }
 
+    /**
+     * Register the push service
+     * 
+     * @param EgoiApp config the app configuration
+     */
+    register(config: EgoiApp) {
+        this.app = config;
         this.initFCM();
     }
 
@@ -364,4 +371,13 @@ export class EgoiPushIonicService {
     private setMessageHash(hash: string) {
         this.messageHash = hash;
     }
+}
+
+interface EgoiApp {
+    apiKey: string;
+    appId: number;
+    os: string;
+    twoStepsField?: string | undefined;
+    twoStepsValue?: string | undefined;
+    deepLinkHandler?: any | undefined;
 }

@@ -1,7 +1,6 @@
 import { Injectable, Inject } from '@angular/core';
 import { EgoiAppService, EgoiApp } from './egoi-push-ionic.module';
 import { Plugins, PushNotification, PushNotificationActionPerformed, PushNotificationToken } from '@capacitor/core'
-import { HTTP } from '@ionic-native/http/ngx'
 import { AlertController } from '@ionic/angular'
 import { InAppBrowser } from '@ionic-native/in-app-browser/ngx'
 
@@ -29,8 +28,8 @@ export class EgoiPushIonicService {
     private registerDeviceEndpoint: string;
     private eventsEndpoint: string;
 
-    constructor(@Inject(EgoiAppService) private config: EgoiApp, private http : HTTP) {
-        this.apiEndpoint = 'https://dev-push-wrapper.egoiapp.com';
+    constructor(@Inject(EgoiAppService) private config: EgoiApp) {
+        this.apiEndpoint = 'https://push-wrapper.egoiapp.com';
         this.registerDeviceEndpoint = '/token';
         this.eventsEndpoint = '/event';
 

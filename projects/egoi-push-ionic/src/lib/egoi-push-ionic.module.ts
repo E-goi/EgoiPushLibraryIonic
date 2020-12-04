@@ -1,6 +1,5 @@
 import { EgoiPushIonicService } from './egoi-push-ionic.service';
-import { NgModule, InjectionToken } from '@angular/core';
-import { HTTP } from '@ionic-native/http/ngx'
+import { InjectionToken } from '@angular/core';
 
 export interface EgoiApp {
     apiKey: string;
@@ -12,12 +11,6 @@ export interface EgoiApp {
 }
  
 export const EgoiAppService = new InjectionToken<EgoiApp>('EgoiApp');
-
-@NgModule({
-    providers : [
-        HTTP
-    ]
-})
 
 export class EgoiPushIonicModule {
   static forRoot(config: EgoiApp) {

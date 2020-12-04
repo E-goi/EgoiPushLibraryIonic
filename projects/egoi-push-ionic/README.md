@@ -17,29 +17,26 @@
 ```
 <br>
 
-###### 3. Set your publishable key
-```ts
 
-import { EgoiPushIonicModule } from '@egoi/push-ionic';
-
-EgoiPushIonicModule.forRoot({
-  apiKey: 'your api here',
-  appId: 'your app id here',
-  os: 'android|ios',
-  twoStepsField: 'the field to set on new/edit register (e.g. id, email) (optional)',
-  twoStepsValue: 'the field value to set on new/edit register (optional)', deepLinkHandler: 'link handler to redirect the user on notification open (optional)'
-});
-```
-
-
-###### 3. Register the device
+###### 2. Register the app and the device
 ```ts
 import { EgoiPushIonicService } from '@egoi/push-ionic';
 
-export class AuthService {
+export class NotificationsService {
   constructor(
       private egoiPushService: EgoiPushIonicService
   )
+
+  registerEgoiPush() {
+    this.egoiPushService.register({
+      apiKey: 'your api here',
+      appId: 'your app id here',
+      os: 'android|ios',
+      twoStepsField: 'the field to set on new/edit register (e.g. id, email) (optional)',
+      twoStepsValue: 'the field value to set on new/edit register (optional)', 
+      deepLinkHandler: 'link handler to redirect the user on notification open (optional)'
+    });
+  }
 
   registerDevice(user) {
     this.egoiPushService.registerDevice('email', user.email).then((response) => {

@@ -1,6 +1,6 @@
 {
   "name": "@egoi/push-ionic",
-  "version": "0.0.4",
+  "version": "0.0.5",
   "peerDependencies": {
     "@angular/common": "~10.0.0",
     "@angular/router": "~10.0.0",

@@ -291,6 +291,10 @@ export class EgoiPushIonicService {
             actions: actions || {}
         };
 
+        if(this.app.notificationHandler) {
+            this.app.notificationHandler(notification);
+        }
+
         this.displayPush(notification).then();
     }
 
@@ -384,4 +388,5 @@ interface EgoiApp {
     twoStepsField?: string | undefined;
     twoStepsValue?: string | undefined;
     deepLinkHandler?: any | undefined;
+    notificationHandler?: any | undefined;
 }

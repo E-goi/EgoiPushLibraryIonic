@@ -34,7 +34,8 @@ export class NotificationsService {
       os: 'android|ios',
       twoStepsField: 'the field to set on new/edit register (e.g. id, email) (optional)',
       twoStepsValue: 'the field value to set on new/edit register (optional)', 
-      deepLinkHandler: 'link handler to redirect the user on notification open (optional)'
+      deepLinkHandler: 'link handler to redirect the user on notification open (optional)',
+      notificationHandler: 'notification handler to work with the notification content (optional)'
     });
   }
 

@@ -306,6 +306,10 @@ export class EgoiPushIonicService {
             return false;
         }
 
+        if(this.contactId == null || this.messageHash == null) {
+            return false;
+        }
+
         const payload = {
             api_key: this.app.apiKey,
             app_id: this.app.appId,

@@ -294,8 +294,11 @@ export class EgoiPushIonicService {
         if(this.app.notificationHandler) {
             this.app.notificationHandler(notification);
         }
+        
+        if(this.contactId !== null && this.messageHash !== null) {
+            this.displayPush(notification).then();
+        }
 
-        this.displayPush(notification).then();
     }
 
     /**
